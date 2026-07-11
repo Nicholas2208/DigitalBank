@@ -1,5 +1,6 @@
 package com.nwhite.customerservice.service;
 
+import com.nwhite.common.exception.ConflictException;
 import com.nwhite.customerservice.dto.CustomerCreatedResponse;
 import com.nwhite.customerservice.dto.CustomerRequest;
 import com.nwhite.customerservice.entity.Customer;
@@ -34,7 +35,7 @@ public class CustomerService {
             if (fp.equals(existing.getRequestFingerprint())) {
                 return mapper.toCreateResponse(existing); // idempotent replay
             }
-            System.out.println("Conflict discovered! This External ID already exists!");
+            throw new ConflictException("Same externalId used with different data!");
         }
 
         Customer entity = mapper.toEntity(request);
