@@ -22,20 +22,21 @@ public class CustomerService {
 
     public CustomerCreatedResponse create(CustomerRequest request) {
         String externalId = request.getExternalId();
+        String email = request.getEmail();
         String fp = FingerPrint.customerCreate(request.getFirstName(),
                 request.getLastName(),
                 request.getEmail(),
                 request.getPhone(),
                 request.getAddress());
 
-        // Fast path: same externalId already present?
-        Optional<Customer> byExt = repository.findByExternalId(externalId);
-        if (byExt.isPresent()) {
-            Customer existing = byExt.get();
+        // Fast path: same email already present?
+        Optional<Customer> byEmail = repository.findByEmail(email);
+        if (byEmail.isPresent()) {
+            Customer existing = byEmail.get();
             if (fp.equals(existing.getRequestFingerprint())) {
                 return mapper.toCreateResponse(existing); // idempotent replay
             }
-            throw new ConflictException("Same externalId used with different data!");
+            throw new ConflictException("Same email used with different data!");
         }
 
         Customer entity = mapper.toEntity(request);

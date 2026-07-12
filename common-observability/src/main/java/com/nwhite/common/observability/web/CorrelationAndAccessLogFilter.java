@@ -24,8 +24,6 @@ public class CorrelationAndAccessLogFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain chain) throws ServletException, IOException {
-        System.out.println("=== FILTER WORKS ===");
-        log.info("=== FILTER WORKS ===");
 
         // Correlation ID (use incoming or generate)
         String cid = request.getHeader("X-Request-Id");
