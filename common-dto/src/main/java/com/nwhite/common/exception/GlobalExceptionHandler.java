@@ -23,6 +23,13 @@ public class GlobalExceptionHandler {
 
     }
 
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleResourceNotFound(ResourceNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(err("NOT FOUND", ex.getMessage(), ex.getMessage()));
+
+    }
+
     // --------------- helper -------------------
     private ErrorResponse err(String code, String message, String details) {
         return ErrorResponse.builder()

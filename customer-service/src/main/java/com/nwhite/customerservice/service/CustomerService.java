@@ -1,6 +1,6 @@
 package com.nwhite.customerservice.service;
 
-import com.nwhite.common.exception.ConflictException;
+import com.nwhite.common.exception.*;
 import com.nwhite.customerservice.dto.CustomerCreatedResponse;
 import com.nwhite.customerservice.dto.CustomerRequest;
 import com.nwhite.customerservice.entity.Customer;
@@ -46,5 +46,23 @@ public class CustomerService {
         entity.setCreatedAt(LocalDateTime.now());
         Customer saved = repository.saveAndFlush(entity);
         return mapper.toCreateResponse(saved);
+    }
+
+    public Integer updateKycStatus(String id, String kycStatus) {
+        Customer c = repository.findByExternalId(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found with externalId: " + id));
+
+        if ("VERIFIED".equalsIgnoreCase(kycStatus)) {
+            c.setKycStatus(KycStatus.VERIFIED);
+            c.setActive(true);
+
+            // Create customer's login credentials
+
+            repository.save(c);
+        } else {
+            c.setKycStatus(KycStatus.REJECTED);
+            repository.save(c);
+        }
+        return c.getVersion();
     }
 }
