@@ -72,4 +72,12 @@ public class CustomerService {
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not found with externalId: " + externalId));
         return mapper.toResponse(customer);
     }
+
+    public boolean exists(String externalId) {
+        return repository.findByExternalId(externalId).isPresent();
+    }
+
+    public boolean existsByEmail(String email) {
+        return repository.findByEmail(email).isPresent();
+    }
 }
