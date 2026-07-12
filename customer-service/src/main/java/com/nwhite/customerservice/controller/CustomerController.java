@@ -2,6 +2,7 @@ package com.nwhite.customerservice.controller;
 
 import com.nwhite.customerservice.dto.CustomerCreatedResponse;
 import com.nwhite.customerservice.dto.CustomerRequest;
+import com.nwhite.customerservice.dto.CustomerResponse;
 import com.nwhite.customerservice.dto.UpdateKycStatusRequest;
 import com.nwhite.customerservice.service.CustomerService;
 import jakarta.validation.Valid;
@@ -35,5 +36,13 @@ public class CustomerController {
         return ResponseEntity.noContent()
                 .eTag("\\" + newVersion + "\\")
                 .build();
+    }
+
+    @GetMapping("/customers/{externalId}")
+    public ResponseEntity<CustomerResponse> getCustomerByExternalId(@PathVariable String externalId) {
+        CustomerResponse dto = service.getByExternalId(externalId);
+        return ResponseEntity.ok()
+                .eTag("\"" + dto.getVersion() + "\"") // RFC: ETag is a quoted string
+                .body(dto);
     }
 }

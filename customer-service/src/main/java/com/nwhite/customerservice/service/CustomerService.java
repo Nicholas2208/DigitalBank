@@ -3,6 +3,7 @@ package com.nwhite.customerservice.service;
 import com.nwhite.common.exception.*;
 import com.nwhite.customerservice.dto.CustomerCreatedResponse;
 import com.nwhite.customerservice.dto.CustomerRequest;
+import com.nwhite.customerservice.dto.CustomerResponse;
 import com.nwhite.customerservice.entity.Customer;
 import com.nwhite.customerservice.entity.KycStatus;
 import com.nwhite.customerservice.mapper.CustomerMapper;
@@ -64,5 +65,11 @@ public class CustomerService {
             repository.save(c);
         }
         return c.getVersion();
+    }
+
+    public CustomerResponse getByExternalId(String externalId) {
+        Customer customer = repository.findByExternalId(externalId)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found with externalId: " + externalId));
+        return mapper.toResponse(customer);
     }
 }
