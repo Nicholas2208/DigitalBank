@@ -4,6 +4,7 @@ import com.nwhite.common.exception.*;
 import com.nwhite.customerservice.dto.CustomerCreatedResponse;
 import com.nwhite.customerservice.dto.CustomerRequest;
 import com.nwhite.customerservice.dto.CustomerResponse;
+import com.nwhite.customerservice.dto.UpdateCustomerRequest;
 import com.nwhite.customerservice.entity.Customer;
 import com.nwhite.customerservice.entity.KycStatus;
 import com.nwhite.customerservice.mapper.CustomerMapper;
@@ -79,5 +80,21 @@ public class CustomerService {
 
     public boolean existsByEmail(String email) {
         return repository.findByEmail(email).isPresent();
+    }
+
+    public Integer updateCustomer(String id, UpdateCustomerRequest request, Integer expected) {
+        Customer c = repository.findByExternalId(id)
+                .orElseThrow(() -> new CustomerNotFoundException("Customer not found: " + id));
+
+        if (expected == null) {
+            throw new PreconditionRequiredException("If-Match header required");
+        }
+        if (!expected.equals(c.getVersion())) {
+            throw new VersionMismatchException("Stale version. Current = " + c.getVersion() + "If-Match = " + expected);
+        }
+
+        mapper.updateCustomerFromRequest(request, c);
+        Customer saved = repository.save(c); // Hibernate increments version
+        return mapper.toResponse(saved).getVersion();
     }
 }

@@ -3,6 +3,7 @@ package com.nwhite.customerservice.mapper;
 import com.nwhite.customerservice.dto.CustomerCreatedResponse;
 import com.nwhite.customerservice.dto.CustomerRequest;
 import com.nwhite.customerservice.dto.CustomerResponse;
+import com.nwhite.customerservice.dto.UpdateCustomerRequest;
 import com.nwhite.customerservice.entity.Customer;
 import org.springframework.stereotype.Component;
 
@@ -46,5 +47,47 @@ public class CustomerMapper {
                 .updatedAt(customer.getUpdatedAt())
                 .version(customer.getVersion())
                 .build();
+    }
+
+    public void updateCustomerFromRequest(UpdateCustomerRequest request, Customer customer) {
+        if (request == null) {
+            return;
+        }
+
+        if (request.getFirstName() != null) {
+            customer.setFirstName(request.getFirstName());
+        }
+
+        if (request.getLastName() != null) {
+            customer.setLastName(request.getLastName());
+        }
+
+        if (request.getEmail() != null) {
+            customer.setEmail(request.getEmail());
+        }
+
+        if (request.getPhone() != null) {
+            customer.setPhone(request.getPhone());
+        }
+
+        if (request.getAddress() != null) {
+            customer.setAddress(request.getAddress());
+        }
+
+        if (request.getExternalId() != null) {
+            customer.setExternalId(request.getExternalId());
+        }
+
+        if (request.getKycStatus() != null) {
+            customer.setKycStatus(request.getKycStatus());
+        }
+
+        if (request.getRequestFingerprint() != null) {
+            customer.setRequestFingerprint(request.getRequestFingerprint());
+        }
+
+        if (request.getActive() != null) {
+            customer.setActive(request.getActive());
+        }
     }
 }

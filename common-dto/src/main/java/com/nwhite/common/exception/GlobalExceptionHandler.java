@@ -25,8 +25,29 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleResourceNotFound(ResourceNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.CONFLICT)
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(err("NOT FOUND", ex.getMessage(), ex.getMessage()));
+
+    }
+
+    @ExceptionHandler(CustomerNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleCustomerNotFound(CustomerNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(err("NOT FOUND", ex.getMessage(), ex.getMessage()));
+
+    }
+
+    @ExceptionHandler(PreconditionRequiredException.class)
+    public ResponseEntity<ErrorResponse> handlePrecondition(PreconditionRequiredException ex) {
+        return ResponseEntity.status(HttpStatus.PRECONDITION_REQUIRED)
+                .body(err("PRECONDITION REQUIRED", ex.getMessage(), ex.getMessage()));
+
+    }
+
+    @ExceptionHandler(VersionMismatchException.class)
+    public ResponseEntity<ErrorResponse> handleVersionMismatch(VersionMismatchException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(err("CONFLICT", ex.getMessage(), ex.getMessage()));
 
     }
 

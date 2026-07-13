@@ -1,9 +1,6 @@
 package com.nwhite.customerservice.controller;
 
-import com.nwhite.customerservice.dto.CustomerCreatedResponse;
-import com.nwhite.customerservice.dto.CustomerRequest;
-import com.nwhite.customerservice.dto.CustomerResponse;
-import com.nwhite.customerservice.dto.UpdateKycStatusRequest;
+import com.nwhite.customerservice.dto.*;
 import com.nwhite.customerservice.service.CustomerService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -54,5 +51,26 @@ public class CustomerController {
     @GetMapping("/customers/exists")
     public ResponseEntity<Boolean> existsByEmail(@RequestParam String email) {
         return ResponseEntity.ok(service.existsByEmail(email));
+    }
+
+    @PatchMapping("/customers/{id}")
+    public ResponseEntity<Void> updateCustomer(
+            @PathVariable String id,
+            @RequestHeader(name = "If-Match", required = true) String ifMatch,
+            @RequestBody UpdateCustomerRequest request) {
+        Integer expected = parseIfMatch(ifMatch);
+        Integer newVersion = service.updateCustomer(id, request, expected);
+
+        // Return 200 OK, no body, only ETag
+        return ResponseEntity.ok()
+                .eTag("\"" + newVersion + "\"")
+                .build();
+    }
+
+    private Integer parseIfMatch(String ifMatch) {
+        if (ifMatch == null || ifMatch.isBlank()) return null;
+        // Accept bare numbers (e.g. 3) or quoted ("3")
+        String v = ifMatch.replace("\"", "").trim();
+        return Integer.valueOf(v);
     }
 }
