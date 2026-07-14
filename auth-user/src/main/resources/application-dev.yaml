@@ -1,0 +1,25 @@
+server:
+  port: 8094
+
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://dev-vgk04dj5v68sbhre.us.auth0.com/
+  application:
+    name: auth-user
+
+logging:
+  level:
+    root: INFO
+    com.nwhite.authuser: DEBUG
+    org.springframework.security: DEBUG
+
+auth0:
+  domain: https://dev-vgk04dj5v68sbhre.us.auth0.com
+  audience: https://mockbank/api
+  mgmt:
+    client-id: 7m9h4UQsjOeVom5ysSt0t3TFLRgibBkT
+    client-secret: XXXXXXX
+    audience: https://dev-vgk04dj5v68sbhre.us.auth0.com/api/v2
